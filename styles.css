@@ -1,8 +1,10 @@
 :root {
-    --primary: #00b7af;
+    --primary: #01411C; /* Pakistan Green */
+    --accent: #00b7af;  /* Skoop Turquoise */
+    --gold: #FFD700;
     --dark: #10181f;
     --light: #ffffff;
-    --glass: rgba(16, 24, 31, 0.75);
+    --glass: rgba(1, 65, 28, 0.7);
     --glass-border: rgba(255, 255, 255, 0.1);
 }
 
@@ -19,7 +21,7 @@ body {
     height: 100vh;
     width: 100vw;
     overflow: hidden;
-    background-image: url('https://skoop-dev-code-agent.s3.us-east-1.amazonaws.com/skoop-n8n-continue%2Faigen-1776082826208%2Fassets%2Flahore_weather_bg-1776083752789.png');
+    background-image: url('https://skoop-dev-code-agent.s3.us-east-1.amazonaws.com/skoop-n8n-continue%2Faigen-1776082826208%2Fassets%2Fcricket_stadium_v2-1776087008756.png');
     background-size: cover;
     background-position: center;
     display: flex;
@@ -33,19 +35,19 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, rgba(16, 24, 31, 0.85) 0%, rgba(16, 24, 31, 0.5) 100%);
+    background: linear-gradient(135deg, rgba(16, 24, 31, 0.8) 0%, rgba(1, 65, 28, 0.4) 100%);
     z-index: 0;
 }
 
 .dashboard {
     position: relative;
     z-index: 1;
-    width: 90%;
-    max-width: 1600px;
-    height: 90vh;
+    width: 94%;
+    max-width: 1800px;
+    height: 92vh;
     display: grid;
-    grid-template-rows: auto auto 1fr auto auto;
-    gap: 1.5rem;
+    grid-template-rows: auto auto 1.2fr auto auto;
+    gap: 1.2rem;
 }
 
 /* Header */
@@ -53,23 +55,23 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    border-bottom: 2px solid var(--primary);
-    padding-bottom: 1rem;
+    border-bottom: 3px solid var(--gold);
+    padding-bottom: 0.5rem;
 }
 
 .location-box h1 {
-    font-size: 5rem;
+    font-size: 4rem;
     font-weight: 800;
     line-height: 1;
-    letter-spacing: -2px;
-    color: #ff4757;
+    letter-spacing: -1px;
+    color: var(--light);
 }
 
 .location-box p {
-    font-size: 1.5rem;
-    color: var(--primary);
+    font-size: 1.2rem;
+    color: var(--gold);
     font-weight: 600;
-    letter-spacing: 4px;
+    letter-spacing: 2px;
 }
 
 .time-box {
@@ -77,171 +79,231 @@ body {
 }
 
 #clock {
-    font-size: 4rem;
+    font-size: 3.5rem;
     font-weight: 600;
     line-height: 1;
 }
 
 #date {
-    font-size: 1.2rem;
-    color: var(--primary);
+    font-size: 1rem;
+    color: var(--accent);
     font-weight: 400;
-    margin-top: 0.5rem;
+    margin-top: 0.2rem;
 }
 
-/* Main Weather */
-.main-weather {
+/* Main Scoreboard */
+.main-scoreboard {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 1.5rem;
 }
 
-.current-weather-card {
+.score-card {
     background: var(--glass);
     backdrop-filter: blur(20px);
     border: 1px solid var(--glass-border);
-    border-radius: 30px;
-    padding: 3rem;
+    border-left: 10px solid var(--gold);
+    border-radius: 20px;
+    padding: 2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.temp-container {
-    font-size: 10rem;
+.team-name {
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--gold);
+    letter-spacing: 2px;
+}
+
+.score-container {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+}
+
+#current-score {
+    font-size: 8rem;
     font-weight: 800;
     line-height: 1;
-    display: flex;
-    align-items: flex-start;
 }
 
-.unit {
-    font-size: 4rem;
-    margin-top: 1.5rem;
-    color: var(--primary);
-}
-
-.condition {
+.overs {
     font-size: 2.5rem;
+    color: var(--accent);
+    font-weight: 400;
+}
+
+.phase {
+    font-size: 1.5rem;
     font-weight: 400;
     text-transform: uppercase;
-    letter-spacing: 2px;
-    margin-top: 1rem;
+    letter-spacing: 4px;
+    opacity: 0.8;
 }
 
-.weather-visual {
-    width: 250px;
-    height: 250px;
+.scoreboard-visual {
+    width: 150px;
+    height: 150px;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-/* Stats Grid */
-.stats-grid {
+.bat-ball-icon {
+    font-size: 100px;
+    animation: bounce 2s ease-in-out infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px) rotate(10deg); }
+}
+
+/* Match Stats Grid */
+.match-stats-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr;
-    gap: 1.5rem;
+    gap: 1rem;
 }
 
-.stat-card {
-    background: var(--glass);
+.m-stat-card {
+    background: rgba(16, 24, 31, 0.8);
     backdrop-filter: blur(10px);
     border: 1px solid var(--glass-border);
-    border-radius: 20px;
-    padding: 1.5rem;
+    border-radius: 15px;
+    padding: 1rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
 }
 
-.stat-label {
-    font-size: 1rem;
-    color: var(--primary);
-    margin-bottom: 0.5rem;
+.m-stat-label {
+    font-size: 0.9rem;
+    color: var(--accent);
+    margin-bottom: 0.3rem;
     font-weight: 600;
 }
 
-.stat-value {
-    font-size: 2.2rem;
+.m-stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--light);
+}
+
+/* Players Section */
+.players-section {
+    background: rgba(1, 65, 28, 0.5);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 1.2rem;
+}
+
+.players-container {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+}
+
+.sub-title {
+    font-size: 1rem;
+    color: var(--gold);
+    margin-bottom: 0.8rem;
+    letter-spacing: 1px;
     font-weight: 600;
+}
+
+.player-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.8rem 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    margin-bottom: 0.5rem;
+    transition: all 0.3s;
+}
+
+.player-row.active {
+    background: rgba(0, 183, 175, 0.2);
+    border-left: 4px solid var(--accent);
+}
+
+.player-row.bowl-active {
+    background: rgba(255, 215, 0, 0.1);
+    border-left: 4px solid var(--gold);
+}
+
+.p-name {
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.p-stats {
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: var(--accent);
 }
 
 /* Chart Section */
 .chart-section {
-    background: var(--glass);
+    background: rgba(16, 24, 31, 0.8);
     backdrop-filter: blur(10px);
     border: 1px solid var(--glass-border);
-    border-radius: 30px;
-    padding: 1.5rem;
+    border-radius: 20px;
+    padding: 1.2rem;
     display: flex;
     flex-direction: column;
 }
 
-.chart-section .section-title {
-    margin-bottom: 0.5rem;
+.section-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.8rem;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .chart-container {
     width: 100%;
     height: 100%;
-    min-height: 200px;
-    position: relative;
+    min-height: 180px;
 }
 
-/* Forecast */
-.forecast-section {
-    background: var(--glass);
+/* Recent Matches */
+.recent-matches-section {
+    background: rgba(1, 65, 28, 0.4);
     backdrop-filter: blur(10px);
     border: 1px solid var(--glass-border);
-    border-radius: 30px;
-    padding: 2rem;
+    border-radius: 20px;
+    padding: 1.2rem;
 }
 
-.section-title {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin-bottom: 1.5rem;
-    color: var(--primary);
-    text-align: center;
-}
-
-.forecast-grid {
+.matches-grid {
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 1rem;
 }
 
-.forecast-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.match-item {
+    background: rgba(16, 24, 31, 0.6);
     padding: 1rem;
-    border-radius: 15px;
-    transition: background 0.3s;
+    border-radius: 12px;
+    text-align: center;
 }
 
-.forecast-day {
-    font-size: 1.1rem;
+.m-teams {
+    font-size: 1rem;
     font-weight: 600;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.4rem;
 }
 
-.forecast-icon {
-    width: 50px;
-    height: 50px;
-    margin-bottom: 0.5rem;
-}
-
-.forecast-temp {
-    font-size: 1.5rem;
-    font-weight: 600;
-}
-
-.forecast-low {
-    font-size: 0.9rem;
-    opacity: 0.6;
+.m-result {
+    font-size: 0.85rem;
+    color: var(--accent);
 }
 
 /* Footer */
@@ -249,7 +311,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-top: 1rem;
+    padding-top: 0.5rem;
     border-top: 1px solid var(--glass-border);
 }
 
@@ -278,12 +340,12 @@ body {
 }
 
 .update-time {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     opacity: 0.7;
 }
 
 @media (max-width: 1400px) {
-    .location-box h1 { font-size: 4rem; }
-    .temp-container { font-size: 8rem; }
-    .weather-visual { width: 200px; height: 200px; }
+    .location-box h1 { font-size: 3rem; }
+    #current-score { font-size: 6rem; }
+    .scoreboard-visual { width: 100px; height: 100px; }
 }

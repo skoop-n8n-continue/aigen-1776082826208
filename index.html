@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="manifest" href="./manifest.json">
+    <link rel="manifest" href="./manifest.json">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>Lahore Weather Dashboard</title>
-    <link rel="stylesheet" href="styles.css?v=r1e2d3">
+    <title>Pakistan Cricket Live Dashboard</title>
+    <link rel="stylesheet" href="styles.css?v=c7r1k9">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
@@ -19,8 +19,8 @@
     <main class="dashboard">
         <header class="header">
             <div class="location-box">
-                <h1 id="city-name">LAHORE</h1>
-                <p id="country-name">PAKISTAN</p>
+                <h1 id="match-title">PAK vs ENG</h1>
+                <p id="match-status">2nd T20I • LIVE FROM LAHORE</p>
             </div>
             <div class="time-box">
                 <div id="clock">00:00:00</div>
@@ -28,62 +28,91 @@
             </div>
         </header>
 
-        <section class="main-weather">
-            <div class="current-weather-card">
-                <div class="weather-info">
-                    <div class="temp-container">
-                        <span id="current-temp">--</span><span class="unit">°C</span>
+        <section class="main-scoreboard">
+            <div class="score-card">
+                <div class="team-info">
+                    <div class="team-main">
+                        <span class="team-name">PAKISTAN</span>
+                        <div class="score-container">
+                            <span id="current-score">168/4</span>
+                            <span class="overs" id="current-overs">(18.2)</span>
+                        </div>
                     </div>
-                    <div id="weather-condition" class="condition">LOADING...</div>
+                    <div id="match-phase" class="phase">INNINGS 1</div>
                 </div>
-                <div class="weather-visual">
-                    <div id="weather-animation-container"></div>
+                <div class="scoreboard-visual">
+                    <div id="cricket-animation-container">
+                        <div class="bat-ball-icon">🏏</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <span class="stat-label">HUMIDITY</span>
-                    <span id="humidity" class="stat-value">--%</span>
+            <div class="match-stats-grid">
+                <div class="m-stat-card">
+                    <span class="m-stat-label">CRR</span>
+                    <span id="crr" class="m-stat-value">9.16</span>
                 </div>
-                <div class="stat-card">
-                    <span class="stat-label">WIND SPEED</span>
-                    <span id="wind-speed" class="stat-value">-- km/h</span>
+                <div class="m-stat-card">
+                    <span class="m-stat-label">PROJECTED</span>
+                    <span id="projected" class="m-stat-value">185</span>
                 </div>
-                <div class="stat-card">
-                    <span class="stat-label">VISIBILITY</span>
-                    <span id="visibility" class="stat-value">-- km</span>
+                <div class="m-stat-card">
+                    <span class="m-stat-label">LAST 5 OVERS</span>
+                    <span id="last-5-overs" class="m-stat-value">48/1</span>
                 </div>
-                <div class="stat-card">
-                    <span class="stat-label">UV INDEX</span>
-                    <span id="uv-index" class="stat-value">--</span>
+                <div class="m-stat-card">
+                    <span class="m-stat-label">PARTNERSHIP</span>
+                    <span id="partnership" class="m-stat-value">52(28)</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="players-section">
+            <div class="players-container">
+                <div class="batsmen-list">
+                    <h2 class="sub-title">BATSMEN</h2>
+                    <div id="batsman-1" class="player-row active">
+                        <span class="p-name">Babar Azam*</span>
+                        <span class="p-stats">72 (45)</span>
+                    </div>
+                    <div id="batsman-2" class="player-row">
+                        <span class="p-name">Mohammad Rizwan</span>
+                        <span class="p-stats">45 (32)</span>
+                    </div>
+                </div>
+                <div class="bowler-box">
+                    <h2 class="sub-title">BOWLER</h2>
+                    <div id="current-bowler" class="player-row bowl-active">
+                        <span class="p-name">Mark Wood</span>
+                        <span class="p-stats">3.2-0-34-1</span>
+                    </div>
                 </div>
             </div>
         </section>
 
         <section class="chart-section">
-            <h2 class="section-title">24-HOUR TEMPERATURE TREND</h2>
+            <h2 class="section-title">WORM CHART - RUN RATE PROGRESSION</h2>
             <div class="chart-container">
-                <canvas id="tempChart"></canvas>
+                <canvas id="wormChart"></canvas>
             </div>
         </section>
 
-        <section class="forecast-section">
-            <h2 class="section-title">WEEKLY FORECAST</h2>
-            <div id="forecast-container" class="forecast-grid">
-                <!-- Forecast items will be injected here -->
+        <section class="recent-matches-section">
+            <h2 class="section-title">RECENT MATCHES</h2>
+            <div id="recent-matches-container" class="matches-grid">
+                <!-- Recent matches will be injected here -->
             </div>
         </section>
 
         <footer class="footer">
             <div class="live-indicator">
-                <span class="dot"></span> LIVE UPDATES
+                <span class="dot"></span> LIVE BROADCAST
             </div>
-            <div class="update-time">Last updated: <span id="last-updated">--</span></div>
+            <div class="update-time">Auto-updating statistics: <span id="last-updated">--</span></div>
         </footer>
     </main>
 
-    <script src="script.js?v=r1e2d3"></script>
+    <script src="script.js?v=c7r1k9"></script>
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function () {
