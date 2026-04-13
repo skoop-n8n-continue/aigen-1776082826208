@@ -7,8 +7,8 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>Pakistan Cricket Live Dashboard</title>
-    <link rel="stylesheet" href="styles.css?v=c7r1k9">
+    <title>Skoop Football Live - Match Statistics</title>
+    <link rel="stylesheet" href="styles.css?v=f1o2o3">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
@@ -18,101 +18,130 @@
     <div class="background-overlay"></div>
     <main class="dashboard">
         <header class="header">
-            <div class="location-box">
-                <h1 id="match-title">PAK vs ENG</h1>
-                <p id="match-status">2nd T20I • LIVE FROM LAHORE</p>
+            <div class="match-meta">
+                <div class="league-info">
+                    <img src="https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg" alt="League" class="league-logo" onerror="this.style.display='none'">
+                    <span>PREMIER LEAGUE • MATCHWEEK 32</span>
+                </div>
+                <div class="clock-box">
+                    <span id="match-time">62:14</span>
+                    <span class="live-tag">LIVE</span>
+                </div>
             </div>
-            <div class="time-box">
-                <div id="clock">00:00:00</div>
-                <div id="date">MONDAY, APRIL 13</div>
+            <div class="scoreboard">
+                <div class="team home">
+                    <div class="team-name">REAL MADRID</div>
+                    <div class="team-score" id="home-score">2</div>
+                </div>
+                <div class="vs">VS</div>
+                <div class="team away">
+                    <div class="team-score" id="away-score">1</div>
+                    <div class="team-name">MAN CITY</div>
+                </div>
             </div>
         </header>
 
-        <section class="main-scoreboard">
-            <div class="score-card">
-                <div class="team-info">
-                    <div class="team-main">
-                        <span class="team-name">PAKISTAN</span>
-                        <div class="score-container">
-                            <span id="current-score">168/4</span>
-                            <span class="overs" id="current-overs">(18.2)</span>
+        <section class="main-content">
+            <div class="stats-panel glass">
+                <h2 class="panel-title">MATCH STATISTICS</h2>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-values">
+                            <span id="home-possession">54%</span>
+                            <span>POSSESSION</span>
+                            <span id="away-possession">46%</span>
+                        </div>
+                        <div class="stat-bar-container">
+                            <div class="stat-bar home" id="bar-possession-home" style="width: 54%;"></div>
+                            <div class="stat-bar away" id="bar-possession-away" style="width: 46%;"></div>
                         </div>
                     </div>
-                    <div id="match-phase" class="phase">INNINGS 1</div>
+
+                    <div class="stat-row">
+                        <span class="val home" id="home-shots">14</span>
+                        <span class="label">TOTAL SHOTS</span>
+                        <span class="val away" id="away-shots">9</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="val home" id="home-on-target">6</span>
+                        <span class="label">SHOTS ON TARGET</span>
+                        <span class="val away" id="away-shots-on-target">4</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="val home" id="home-passes">482</span>
+                        <span class="label">TOTAL PASSES</span>
+                        <span class="val away" id="away-passes">415</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="val home" id="home-corners">5</span>
+                        <span class="label">CORNERS</span>
+                        <span class="val away" id="away-corners">3</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="val home" id="home-fouls">8</span>
+                        <span class="label">FOULS</span>
+                        <span class="val away" id="away-fouls">11</span>
+                    </div>
                 </div>
-                <div class="scoreboard-visual">
-                    <div id="cricket-animation-container">
-                        <div class="bat-ball-icon">🏏</div>
+
+                <div class="cards-display">
+                    <div class="team-cards">
+                        <span class="card yellow">1</span>
+                        <span class="card red">0</span>
+                    </div>
+                    <div class="label">CARDS</div>
+                    <div class="team-cards">
+                        <span class="card yellow">2</span>
+                        <span class="card red">0</span>
                     </div>
                 </div>
             </div>
 
-            <div class="match-stats-grid">
-                <div class="m-stat-card">
-                    <span class="m-stat-label">CRR</span>
-                    <span id="crr" class="m-stat-value">9.16</span>
-                </div>
-                <div class="m-stat-card">
-                    <span class="m-stat-label">PROJECTED</span>
-                    <span id="projected" class="m-stat-value">185</span>
-                </div>
-                <div class="m-stat-card">
-                    <span class="m-stat-label">LAST 5 OVERS</span>
-                    <span id="last-5-overs" class="m-stat-value">48/1</span>
-                </div>
-                <div class="m-stat-card">
-                    <span class="m-stat-label">PARTNERSHIP</span>
-                    <span id="partnership" class="m-stat-value">52(28)</span>
-                </div>
-            </div>
-        </section>
-
-        <section class="players-section">
-            <div class="players-container">
-                <div class="batsmen-list">
-                    <h2 class="sub-title">BATSMEN</h2>
-                    <div id="batsman-1" class="player-row active">
-                        <span class="p-name">Babar Azam*</span>
-                        <span class="p-stats">72 (45)</span>
-                    </div>
-                    <div id="batsman-2" class="player-row">
-                        <span class="p-name">Mohammad Rizwan</span>
-                        <span class="p-stats">45 (32)</span>
+            <div class="right-panel">
+                <div class="chart-panel glass">
+                    <h2 class="panel-title">ATTACK MOMENTUM</h2>
+                    <div class="chart-container">
+                        <canvas id="momentumChart"></canvas>
                     </div>
                 </div>
-                <div class="bowler-box">
-                    <h2 class="sub-title">BOWLER</h2>
-                    <div id="current-bowler" class="player-row bowl-active">
-                        <span class="p-name">Mark Wood</span>
-                        <span class="p-stats">3.2-0-34-1</span>
+
+                <div class="events-panel glass">
+                    <h2 class="panel-title">RECENT EVENTS</h2>
+                    <div id="event-feed" class="event-feed">
+                        <div class="event-item">
+                            <span class="event-time">58'</span>
+                            <span class="event-desc">🟨 Yellow Card - Rodri (Man City)</span>
+                        </div>
+                        <div class="event-item goal">
+                            <span class="event-time">42'</span>
+                            <span class="event-desc">⚽ GOAL! Vini Jr. (Real Madrid)</span>
+                        </div>
+                        <div class="event-item">
+                            <span class="event-time">28'</span>
+                            <span class="event-desc">⚽ GOAL! Erling Haaland (Man City)</span>
+                        </div>
+                        <div class="event-item goal">
+                            <span class="event-time">12'</span>
+                            <span class="event-desc">⚽ GOAL! Jude Bellingham (Real Madrid)</span>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </section>
-
-        <section class="chart-section">
-            <h2 class="section-title">WORM CHART - RUN RATE PROGRESSION</h2>
-            <div class="chart-container">
-                <canvas id="wormChart"></canvas>
-            </div>
-        </section>
-
-        <section class="recent-matches-section">
-            <h2 class="section-title">RECENT MATCHES</h2>
-            <div id="recent-matches-container" class="matches-grid">
-                <!-- Recent matches will be injected here -->
             </div>
         </section>
 
         <footer class="footer">
-            <div class="live-indicator">
-                <span class="dot"></span> LIVE BROADCAST
+            <div class="broadcast-meta">
+                <span id="current-date">MONDAY, APRIL 13</span>
+                <span class="separator">|</span>
+                <span id="current-time">14:45:02</span>
             </div>
-            <div class="update-time">Auto-updating statistics: <span id="last-updated">--</span></div>
+            <div class="system-status">
+                <span class="status-dot"></span> UPDATING LIVE STATS
+            </div>
         </footer>
     </main>
 
-    <script src="script.js?v=c7r1k9"></script>
+    <script src="script.js?v=f1o2o3"></script>
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function () {

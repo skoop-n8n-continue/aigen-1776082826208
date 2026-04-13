@@ -1,49 +1,53 @@
-// Cricket Match Simulation Engine for Digital Signage
-class CricketEngine {
+// Football Match Simulation Engine for Digital Signage
+class FootballEngine {
     constructor() {
         this.match = {
-            teams: { home: "PAK", away: "ENG" },
-            score: { runs: 168, wickets: 4, overs: 18, balls: 2 },
-            batsmen: [
-                { name: "Babar Azam", runs: 72, balls: 45, strike: true },
-                { name: "Mohammad Rizwan", runs: 45, balls: 32, strike: false }
+            time: { minutes: 62, seconds: 14 },
+            score: { home: 2, away: 1 },
+            stats: {
+                possession: { home: 54, away: 46 },
+                shots: { home: 14, away: 9 },
+                onTarget: { home: 6, away: 4 },
+                passes: { home: 482, away: 415 },
+                corners: { home: 5, away: 3 },
+                fouls: { home: 8, away: 11 },
+                yellowCards: { home: 1, away: 2 },
+                redCards: { home: 0, away: 0 }
+            },
+            events: [
+                { time: "58'", desc: "🟨 Yellow Card - Rodri (Man City)", type: 'normal' },
+                { time: "42'", desc: "⚽ GOAL! Vini Jr. (Real Madrid)", type: 'goal' },
+                { time: "28'", desc: "⚽ GOAL! Erling Haaland (Man City)", type: 'goal' },
+                { time: "12'", desc: "⚽ GOAL! Jude Bellingham (Real Madrid)", type: 'goal' }
             ],
-            bowler: { name: "Mark Wood", overs: 3.2, maidens: 0, runs: 34, wickets: 1 },
-            wormData: [],
-            recentMatches: [
-                { teams: "PAK vs BAN", result: "PAK won by 6 wickets", date: "Mar 15, 2026" },
-                { teams: "PAK vs BAN", result: "PAK won by 82 runs", date: "Mar 13, 2026" },
-                { teams: "PAK vs NZ", result: "NZ won by 4 wickets", date: "Feb 28, 2026" },
-                { teams: "PAK vs NZ", result: "PAK won by 12 runs", date: "Feb 26, 2026" }
-            ],
-            lastEvents: []
+            momentumData: Array.from({ length: 63 }, () => Math.floor(Math.random() * 60) - 30)
         };
-
-        // Initialize worm data with some random progression
-        let currentTotal = 0;
-        for (let i = 0; i <= 18; i++) {
-            currentTotal += Math.floor(Math.random() * 12) + 4;
-            this.match.wormData.push(currentTotal);
-        }
 
         this.elements = {
-            clock: document.getElementById('clock'),
-            date: document.getElementById('date'),
-            currentScore: document.getElementById('current-score'),
-            currentOvers: document.getElementById('current-overs'),
-            crr: document.getElementById('crr'),
-            projected: document.getElementById('projected'),
-            last5: document.getElementById('last-5-overs'),
-            partnership: document.getElementById('partnership'),
-            batsman1: document.getElementById('batsman-1'),
-            batsman2: document.getElementById('batsman-2'),
-            bowler: document.getElementById('current-bowler'),
-            recentMatches: document.getElementById('recent-matches-container'),
-            lastUpdated: document.getElementById('last-updated'),
-            wormChartCanvas: document.getElementById('wormChart')
+            matchTime: document.getElementById('match-time'),
+            homeScore: document.getElementById('home-score'),
+            awayScore: document.getElementById('away-score'),
+            homePossession: document.getElementById('home-possession'),
+            awayPossession: document.getElementById('away-possession'),
+            barPossessionHome: document.getElementById('bar-possession-home'),
+            barPossessionAway: document.getElementById('bar-possession-away'),
+            homeShots: document.getElementById('home-shots'),
+            awayShots: document.getElementById('away-shots'),
+            homeOnTarget: document.getElementById('home-on-target'),
+            awayOnTarget: document.getElementById('away-shots-on-target'),
+            homePasses: document.getElementById('home-passes'),
+            awayPasses: document.getElementById('away-passes'),
+            homeCorners: document.getElementById('home-corners'),
+            awayCorners: document.getElementById('away-corners'),
+            homeFouls: document.getElementById('home-fouls'),
+            awayFouls: document.getElementById('away-fouls'),
+            eventFeed: document.getElementById('event-feed'),
+            clock: document.getElementById('current-time'),
+            date: document.getElementById('current-date'),
+            momentumCanvas: document.getElementById('momentumChart')
         };
 
-        this.wormChart = null;
+        this.momentumChart = null;
         this.init();
     }
 
@@ -51,161 +55,155 @@ class CricketEngine {
         this.updateClock();
         setInterval(() => this.updateClock(), 1000);
 
-        this.renderRecentMatches();
         this.initChart();
         this.updateUI();
 
-        // Simulate a new ball every 10 seconds for dynamic signage feel
-        setInterval(() => this.simulateBall(), 10000);
+        // Increment match time
+        setInterval(() => this.tickMatchTime(), 1000);
+
+        // Randomly simulate stats updates
+        setInterval(() => this.simulateAction(), 8000);
     }
 
     updateClock() {
         const now = new Date();
-        const hours = String(now.getHours()).padStart(2, '0');
-        const minutes = String(now.getMinutes()).padStart(2, '0');
-        const seconds = String(now.getSeconds()).padStart(2, '0');
-        this.elements.clock.textContent = `${hours}:${minutes}:${seconds}`;
-
-        const options = { weekday: 'long', month: 'long', day: 'numeric' };
-        this.elements.date.textContent = now.toLocaleDateString('en-US', options).toUpperCase();
+        this.elements.clock.textContent = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        this.elements.date.textContent = now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }).toUpperCase();
     }
 
-    simulateBall() {
-        const outcomes = [0, 1, 1, 1, 2, 2, 4, 4, 6, 'W'];
-        const outcome = outcomes[Math.floor(Math.random() * outcomes.length)];
+    tickMatchTime() {
+        this.match.time.seconds++;
+        if (this.match.time.seconds >= 60) {
+            this.match.time.minutes++;
+            this.match.time.seconds = 0;
 
-        this.match.score.balls++;
-        if (this.match.score.balls >= 6) {
-            this.match.score.overs++;
-            this.match.score.balls = 0;
-            // Rotation of strike at end of over
-            this.match.batsmen[0].strike = !this.match.batsmen[0].strike;
-            this.match.batsmen[1].strike = !this.match.batsmen[1].strike;
-
-            // Add to worm data at end of over
-            this.match.wormData.push(this.match.score.runs);
+            // Add momentum point every minute
+            const newMomentum = Math.floor(Math.random() * 60) - 30;
+            this.match.momentumData.push(newMomentum);
+            if (this.match.momentumData.length > 90) this.match.momentumData.shift();
             this.updateChart();
         }
+        this.elements.matchTime.textContent = `${this.match.time.minutes}:${String(this.match.time.seconds).padStart(2, '0')}`;
 
-        if (outcome === 'W') {
-            this.match.score.wickets++;
-            // Simple logic to replace batsman
-            const outIndex = this.match.batsmen.findIndex(b => b.strike);
-            this.match.batsmen[outIndex] = {
-                name: "Iftikhar Ahmed",
-                runs: 0,
-                balls: 0,
-                strike: true
-            };
-            this.match.bowler.wickets++;
-        } else {
-            this.match.score.runs += outcome;
-            const striker = this.match.batsmen.find(b => b.strike);
-            striker.runs += outcome;
-            striker.balls++;
-            this.match.bowler.runs += outcome;
+        // Stop simulation at 90+ mins (simplified)
+        if (this.match.time.minutes >= 95) {
+            this.match.time.minutes = 90;
+            this.match.time.seconds = 0;
+        }
+    }
 
-            // Rotate strike on odd runs
-            if (outcome % 2 !== 0) {
-                this.match.batsmen[0].strike = !this.match.batsmen[0].strike;
-                this.match.batsmen[1].strike = !this.match.batsmen[1].strike;
-            }
+    simulateAction() {
+        // Randomly update stats
+        const side = Math.random() > 0.5 ? 'home' : 'away';
+        const action = Math.random();
+
+        if (action < 0.3) {
+            this.match.stats.passes[side] += Math.floor(Math.random() * 5) + 1;
+        } else if (action < 0.45) {
+            this.match.stats.shots[side]++;
+            if (Math.random() > 0.6) this.match.stats.onTarget[side]++;
+        } else if (action < 0.55) {
+            this.match.stats.fouls[side]++;
+        } else if (action < 0.6) {
+            this.match.stats.corners[side]++;
+        } else if (action < 0.01) { // Very rare goal simulation
+            this.addGoal(side);
         }
 
-        // Update bowler overs
-        const bowlOvers = Math.floor(this.match.bowler.overs);
-        let bowlBalls = Math.round((this.match.bowler.overs - bowlOvers) * 10);
-        bowlBalls++;
-        if (bowlBalls >= 6) {
-            this.match.bowler.overs = bowlOvers + 1;
-        } else {
-            this.match.bowler.overs = bowlOvers + (bowlBalls / 10);
-        }
+        // Adjust possession slightly
+        const shift = Math.floor(Math.random() * 3) - 1;
+        this.match.stats.possession.home = Math.max(30, Math.min(70, this.match.stats.possession.home + shift));
+        this.match.stats.possession.away = 100 - this.match.stats.possession.home;
 
         this.updateUI();
-        this.elements.lastUpdated.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
     }
 
-    updateUI() {
-        this.elements.currentScore.textContent = `${this.match.score.runs}/${this.match.score.wickets}`;
-        this.elements.currentOvers.textContent = `(${this.match.score.overs}.${this.match.score.balls})`;
-
-        const totalBalls = (this.match.score.overs * 6) + this.match.score.balls;
-        const crr = totalBalls > 0 ? (this.match.score.runs / (totalBalls / 6)).toFixed(2) : "0.00";
-        this.elements.crr.textContent = crr;
-
-        const projected = Math.round(crr * 20);
-        this.elements.projected.textContent = projected;
-
-        // Mock partnership and last 5
-        this.elements.partnership.textContent = `${this.match.batsmen[0].runs + this.match.batsmen[1].runs}(${this.match.batsmen[0].balls + this.match.batsmen[1].balls})`;
-        this.elements.last5.textContent = `48/1`; // Static mock for simplicity in simulation
-
-        // Batsmen
-        const b1 = this.match.batsmen[0];
-        const b2 = this.match.batsmen[1];
-
-        this.elements.batsman1.querySelector('.p-name').textContent = b1.name + (b1.strike ? '*' : '');
-        this.elements.batsman1.querySelector('.p-stats').textContent = `${b1.runs} (${b1.balls})`;
-        this.elements.batsman1.className = `player-row ${b1.strike ? 'active' : ''}`;
-
-        this.elements.batsman2.querySelector('.p-name').textContent = b2.name + (b2.strike ? '*' : '');
-        this.elements.batsman2.querySelector('.p-stats').textContent = `${b2.runs} (${b2.balls})`;
-        this.elements.batsman2.className = `player-row ${b2.strike ? 'active' : ''}`;
-
-        // Bowler
-        this.elements.bowler.querySelector('.p-name').textContent = this.match.bowler.name;
-        this.elements.bowler.querySelector('.p-stats').textContent = `${this.match.bowler.overs}-${this.match.bowler.maidens}-${this.match.bowler.runs}-${this.match.bowler.wickets}`;
+    addGoal(side) {
+        this.match.score[side]++;
+        const teamName = side === 'home' ? 'Real Madrid' : 'Man City';
+        const player = side === 'home' ? 'Rodrygo' : 'Kevin De Bruyne';
+        this.addEvent(`⚽ GOAL! ${player} (${teamName})`, 'goal');
     }
 
-    renderRecentMatches() {
-        this.elements.recentMatches.innerHTML = '';
-        this.match.recentMatches.forEach(m => {
+    addEvent(desc, type) {
+        const timeStr = `${this.match.time.minutes}'`;
+        this.match.events.unshift({ time: timeStr, desc: desc, type: type });
+        if (this.match.events.length > 6) this.match.events.pop();
+        this.renderEvents();
+    }
+
+    renderEvents() {
+        this.elements.eventFeed.innerHTML = '';
+        this.match.events.forEach(event => {
             const div = document.createElement('div');
-            div.className = 'match-item';
+            div.className = `event-item ${event.type === 'goal' ? 'goal' : ''}`;
             div.innerHTML = `
-                <div class="m-teams">${m.teams}</div>
-                <div class="m-result">${m.result}</div>
+                <span class="event-time">${event.time}</span>
+                <span class="event-desc">${event.desc}</span>
             `;
-            this.elements.recentMatches.appendChild(div);
+            this.elements.eventFeed.appendChild(div);
         });
     }
 
-    initChart() {
-        const ctx = this.elements.wormChartCanvas.getContext('2d');
-        const labels = Array.from({ length: 21 }, (_, i) => i);
+    updateUI() {
+        this.elements.homeScore.textContent = this.match.score.home;
+        this.elements.awayScore.textContent = this.match.score.away;
 
-        this.wormChart = new Chart(ctx, {
-            type: 'line',
+        this.elements.homePossession.textContent = `${this.match.stats.possession.home}%`;
+        this.elements.awayPossession.textContent = `${this.match.stats.possession.away}%`;
+        this.elements.barPossessionHome.style.width = `${this.match.stats.possession.home}%`;
+        this.elements.barPossessionAway.style.width = `${this.match.stats.possession.away}%`;
+
+        this.elements.homeShots.textContent = this.match.stats.shots.home;
+        this.elements.awayShots.textContent = this.match.stats.shots.away;
+        this.elements.homeOnTarget.textContent = this.match.stats.onTarget.home;
+        this.elements.awayOnTarget.textContent = this.match.stats.onTarget.away;
+
+        this.elements.homePasses.textContent = this.match.stats.passes.home;
+        this.elements.awayPasses.textContent = this.match.stats.passes.away;
+        this.elements.homeCorners.textContent = this.match.stats.corners.home;
+        this.elements.awayCorners.textContent = this.match.stats.corners.away;
+        this.elements.homeFouls.textContent = this.match.stats.fouls.home;
+        this.elements.awayFouls.textContent = this.match.stats.fouls.away;
+    }
+
+    initChart() {
+        const ctx = this.elements.momentumCanvas.getContext('2d');
+        const labels = Array.from({ length: 90 }, (_, i) => i + 1);
+
+        this.momentumChart = new Chart(ctx, {
+            type: 'bar',
             data: {
                 labels: labels,
                 datasets: [{
-                    label: 'Pakistan',
-                    data: this.match.wormData,
-                    borderColor: '#FFD700',
-                    backgroundColor: 'rgba(255, 215, 0, 0.1)',
-                    borderWidth: 3,
-                    tension: 0.4,
-                    fill: true,
-                    pointRadius: 4,
-                    pointBackgroundColor: '#FFD700'
+                    label: 'Momentum',
+                    data: this.match.momentumData,
+                    backgroundColor: (context) => {
+                        const val = context.raw;
+                        return val >= 0 ? 'rgba(0, 183, 175, 0.7)' : 'rgba(56, 189, 248, 0.7)';
+                    },
+                    borderRadius: 4,
+                    borderSkipped: false
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                    legend: { display: false }
+                    legend: { display: false },
+                    tooltip: { enabled: false }
                 },
                 scales: {
                     y: {
                         beginAtZero: true,
-                        grid: { color: 'rgba(255, 255, 255, 0.1)' },
-                        ticks: { color: '#ffffff', font: { family: 'Outfit' } }
+                        min: -50,
+                        max: 50,
+                        grid: { color: 'rgba(255, 255, 255, 0.1)', zeroLineColor: '#fff' },
+                        ticks: { display: false }
                     },
                     x: {
                         grid: { display: false },
-                        ticks: { color: '#ffffff', font: { family: 'Outfit' } }
+                        ticks: { color: 'rgba(255, 255, 255, 0.3)', font: { family: 'Outfit', size: 10 } }
                     }
                 }
             }
@@ -213,14 +211,14 @@ class CricketEngine {
     }
 
     updateChart() {
-        if (this.wormChart) {
-            this.wormChart.data.datasets[0].data = [...this.match.wormData];
-            this.wormChart.update();
+        if (this.momentumChart) {
+            this.momentumChart.data.datasets[0].data = [...this.match.momentumData];
+            this.momentumChart.update('none');
         }
     }
 }
 
 // Start Engine
 window.addEventListener('load', () => {
-    new CricketEngine();
+    new FootballEngine();
 });
