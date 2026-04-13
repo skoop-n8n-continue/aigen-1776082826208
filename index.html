@@ -1,83 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="manifest" href="./manifest.json">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>Skoop Agent Status</title>
-    <link rel="stylesheet" href="styles.css?v=a1b2c3">
+    <title>Lahore Weather Dashboard</title>
+    <link rel="stylesheet" href="styles.css?v=w1l2h3">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="background-overlay"></div>
-    <div class="dashboard">
-        <header>
-            <div class="logo">
-                <span class="dot"></span>
-                <h1>SKOOP <span class="highlight">AGENT</span></h1>
+    <main class="dashboard">
+        <header class="header">
+            <div class="location-box">
+                <h1 id="city-name">LAHORE</h1>
+                <p id="country-name">PAKISTAN</p>
             </div>
-            <div class="time-display" id="time-display">00:00:00</div>
+            <div class="time-box">
+                <div id="clock">00:00:00</div>
+                <div id="date">MONDAY, APRIL 13</div>
+            </div>
         </header>
 
-        <main>
-            <div class="status-container">
-                <div class="status-label">CURRENT ACTIVITY</div>
-                <div class="status-content">
-                    <div id="status-text" class="status-text">INITIALIZING...</div>
-                    <div class="progress-bar">
-                        <div class="progress-fill"></div>
+        <section class="main-weather">
+            <div class="current-weather-card">
+                <div class="weather-info">
+                    <div class="temp-container">
+                        <span id="current-temp">--</span><span class="unit">°C</span>
                     </div>
+                    <div id="weather-condition" class="condition">LOADING...</div>
+                </div>
+                <div class="weather-visual">
+                    <div id="weather-animation-container"></div>
                 </div>
             </div>
 
-            <div class="grid-container">
-                <div class="card">
-                    <h3>SYSTEM LOAD</h3>
-                    <div class="chart-mock">
-                        <div class="bar" style="height: 40%"></div>
-                        <div class="bar" style="height: 60%"></div>
-                        <div class="bar" style="height: 55%"></div>
-                        <div class="bar" style="height: 75%"></div>
-                        <div class="bar" style="height: 65%"></div>
-                        <div class="bar" style="height: 80%"></div>
-                    </div>
-                    <p>Processing queue optimized</p>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-label">HUMIDITY</span>
+                    <span id="humidity" class="stat-value">--%</span>
                 </div>
-                <div class="card">
-                    <h3>UPTIME</h3>
-                    <div class="metric">99.98%</div>
-                    <p>All nodes operational</p>
+                <div class="stat-card">
+                    <span class="stat-label">WIND SPEED</span>
+                    <span id="wind-speed" class="stat-value">-- km/h</span>
                 </div>
-                <div class="card">
-                    <h3>TASKS</h3>
-                    <div class="metric" id="task-count">14</div>
-                    <p>Current session active</p>
+                <div class="stat-card">
+                    <span class="stat-label">VISIBILITY</span>
+                    <span id="visibility" class="stat-value">-- km</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">UV INDEX</span>
+                    <span id="uv-index" class="stat-value">--</span>
                 </div>
             </div>
-        </main>
+        </section>
 
-        <footer>
-            <div class="footer-info">
-                <span>STATUS: <span class="online">ONLINE</span></span>
-                <span class="separator">|</span>
-                <span>VERSION: 2.1.100</span>
+        <section class="forecast-section">
+            <h2 class="section-title">WEEKLY FORECAST</h2>
+            <div id="forecast-container" class="forecast-grid">
+                <!-- Forecast items will be injected here -->
             </div>
-        </footer >
-    </div>
-    <script src="script.js?v=a1b2c3"></script>
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', function () {
-        navigator.serviceWorker.register('./sw.js')
-          .then(function (reg) { console.log('[PWA] SW registered:', reg.scope); })
-          .catch(function (err) { console.warn('[PWA] SW registration failed:', err); });
-      });
-    }
-  </script>
+        </section>
+
+        <footer class="footer">
+            <div class="live-indicator">
+                <span class="dot"></span> LIVE UPDATES
+            </div>
+            <div class="update-time">Last updated: <span id="last-updated">--</span></div>
+        </footer>
+    </main>
+
+    <script src="script.js?v=w1l2h3"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function () {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(function (reg) { console.log('[PWA] SW registered:', reg.scope); })
+                    .catch(function (err) { console.warn('[PWA] SW registration failed:', err); });
+            });
+        }
+    </script>
 </body>
 </html>
