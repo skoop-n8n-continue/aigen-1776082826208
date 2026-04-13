@@ -1,145 +1,125 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="manifest" href="./manifest.json">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jumping Championship - Live Dashboard</title>
+    <title>Skoop Notice Manager | CRUD Dashboard</title>
     <!-- Cache Control -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 
-    <!-- Fonts & Icons -->
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- External Libraries -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <link rel="stylesheet" href="styles.css?v=j7u1m2">
+    <link rel="stylesheet" href="styles.css?v=crud99">
 </head>
 <body>
     <div class="app-container">
         <!-- Background Layer -->
+        <div class="background-image"></div>
         <div class="background-overlay"></div>
 
-        <!-- Header Section -->
         <header class="main-header">
-            <div class="brand">
-                <div class="live-tag">
-                    <span class="pulse"></span> LIVE
-                </div>
-                <div class="event-info">
-                    <h1>WORLD ATHLETICS CHAMPIONSHIPS</h1>
-                    <p>MEN'S HIGH JUMP - FINAL | 2026</p>
+            <div class="logo-section">
+                <div class="logo-box">S</div>
+                <div class="logo-text">
+                    <h1>SKOOP</h1>
+                    <p>CONTENT MANAGER SYSTEM</p>
                 </div>
             </div>
-            <div class="clock-box">
-                <div id="current-time">00:00:00</div>
-                <div id="current-date">MONDAY, APRIL 13</div>
+            <div class="header-stats">
+                <div class="stat-item">
+                    <span class="label">STATUS</span>
+                    <span class="value active pulse">ONLINE</span>
+                </div>
+                <div class="stat-item clock-item">
+                    <span id="current-time">00:00:00</span>
+                </div>
             </div>
         </header>
 
-        <!-- Main Content Grid -->
         <main class="dashboard-grid">
-
-            <!-- Primary Scoreboard -->
-            <section class="card scoreboard-card glass">
+            <!-- Form Section -->
+            <section class="card form-card glass">
                 <div class="card-header">
-                    <i class="fas fa-medal"></i> CURRENT ATHLETE
+                    <i class="fas fa-edit"></i>
+                    <h2 id="form-title">CREATE NEW ANNOUNCEMENT</h2>
                 </div>
-                <div class="athlete-profile">
-                    <div class="athlete-flag" id="athlete-flag">🇵🇰</div>
-                    <div class="athlete-name">
-                        <h2 id="athlete-name">ARSHAD NADEEM</h2>
-                        <span class="country-code" id="athlete-country">PAKISTAN</span>
+                <form id="notice-form">
+                    <input type="hidden" id="notice-id">
+
+                    <div class="form-group">
+                        <label for="notice-title">NOTICE TITLE</label>
+                        <input type="text" id="notice-title" placeholder="e.g. SYSTEM MAINTENANCE" required>
                     </div>
-                </div>
-                <div class="jump-metrics">
-                    <div class="metric-item">
-                        <span class="label">ATTEMPT</span>
-                        <span class="value" id="attempt-num">1 / 3</span>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="notice-category">CATEGORY</label>
+                            <select id="notice-category">
+                                <option value="GENERAL">GENERAL</option>
+                                <option value="URGENT">URGENT</option>
+                                <option value="EVENT">EVENT</option>
+                                <option value="MAINTENANCE">MAINTENANCE</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="notice-priority">PRIORITY</label>
+                            <select id="notice-priority">
+                                <option value="LOW">LOW</option>
+                                <option value="NORMAL">NORMAL</option>
+                                <option value="HIGH">HIGH</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="metric-item highlight">
-                        <span class="label">HEIGHT</span>
-                        <span class="value"><span id="target-height">2.37</span><small>m</small></span>
+
+                    <div class="form-group">
+                        <label for="notice-content">CONTENT DESCRIPTION</label>
+                        <textarea id="notice-content" rows="5" placeholder="Enter notice details here..." required></textarea>
                     </div>
-                    <div class="metric-item">
-                        <span class="label">STATUS</span>
-                        <span class="value status-tag" id="jump-status">WAITING</span>
+
+                    <div class="form-actions">
+                        <button type="submit" id="submit-btn" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i> PUBLISH NOTICE
+                        </button>
+                        <button type="button" id="cancel-btn" class="btn btn-secondary hidden">
+                            <i class="fas fa-times"></i> CANCEL
+                        </button>
                     </div>
-                </div>
-                <div class="progress-container">
-                    <div class="progress-bar" id="jump-progress"></div>
-                </div>
+                </form>
             </section>
 
-            <!-- Stats Panel -->
-            <section class="card stats-card glass">
-                <div class="stats-grid">
-                    <div class="stat-box">
-                        <span class="label">PERSONAL BEST</span>
-                        <span class="val" id="pb-val">2.35m</span>
-                    </div>
-                    <div class="stat-box">
-                        <span class="label">SEASON BEST</span>
-                        <span class="val" id="sb-val">2.34m</span>
-                    </div>
-                    <div class="stat-box">
-                        <span class="label">WORLD RECORD</span>
-                        <span class="val">2.45m</span>
-                    </div>
-                    <div class="stat-box">
-                        <span class="label">CURRENT RANK</span>
-                        <span class="val" id="rank-val">#4</span>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Chart Section -->
-            <section class="card chart-card glass">
+            <!-- List Section -->
+            <section class="card list-card glass">
                 <div class="card-header">
-                    <i class="fas fa-chart-line"></i> JUMP HEIGHT PROGRESSION (TOP 5)
+                    <i class="fas fa-list-ul"></i>
+                    <h2>ACTIVE NOTICES</h2>
+                    <div class="counter-badge">
+                        <span id="notice-count">0</span>
+                    </div>
                 </div>
-                <div class="chart-container">
-                    <canvas id="heightChart"></canvas>
+                <div id="notice-list" class="notice-container">
+                    <!-- Dynamic Items -->
                 </div>
             </section>
-
-            <!-- Recent Jumps Log -->
-            <section class="card log-card glass">
-                <div class="card-header">
-                    <i class="fas fa-history"></i> RECENT ATTEMPTS
-                </div>
-                <ul class="jump-log" id="jump-log">
-                    <!-- Log entries injected by JS -->
-                </ul>
-            </section>
-
         </main>
 
-        <!-- Footer -->
         <footer class="main-footer">
-            <div class="ticker-wrapper">
-                <div class="ticker">
-                    UPCOMING: WOMEN'S LONG JUMP FINAL (14:30) • NEW WORLD RECORD ATTEMPT BY BARSHIM AT 2.46m • STADIUM TEMPERATURE: 24°C • HUMIDITY: 45% • WIND: 0.2 m/s (LEGAL) • NEXT ATHLETE: SANGHYEOK WOO (KOR)
+            <div class="ticker-box">
+                <div class="ticker-label">LIVE UPDATES:</div>
+                <div class="ticker-wrapper">
+                    <div class="ticker">
+                        CONTENT MANAGEMENT SYSTEM INITIALIZED... READY FOR INPUT... DATABASE CONNECTED... SKOOP AGENT MONITORING SYSTEM STATUS...
+                    </div>
                 </div>
             </div>
         </footer>
     </div>
 
-    <script src="script.js?v=j7u1m2"></script>
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', function () {
-        navigator.serviceWorker.register('./sw.js')
-          .then(function (reg) { console.log('[PWA] SW registered:', reg.scope); })
-          .catch(function (err) { console.warn('[PWA] SW registration failed:', err); });
-      });
-    }
-  </script>
+    <script src="script.js?v=crud99"></script>
 </body>
 </html>

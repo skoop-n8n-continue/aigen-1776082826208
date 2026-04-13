@@ -1,196 +1,181 @@
-// Jumping Championship Simulation Engine for Digital Signage
-class JumpingEngine {
+/**
+ * Skoop Content Manager - CRUD Engine
+ * Handles notice management with LocalStorage persistence.
+ */
+class NoticeManager {
     constructor() {
-        this.athletes = [
-            { name: "MUTAZ BARSHIM", country: "QATAR", flag: "🇶🇦", pb: "2.43", sb: "2.39", rank: 1 },
-            { name: "GIANMARCO TAMBERI", country: "ITALY", flag: "🇮🇹", pb: "2.39", sb: "2.37", rank: 2 },
-            { name: "SANGHYEOK WOO", country: "S. KOREA", flag: "🇰🇷", pb: "2.36", sb: "2.36", rank: 3 },
-            { name: "ARSHAD NADEEM", country: "PAKISTAN", flag: "🇵🇰", pb: "2.35", sb: "2.34", rank: 4 },
-            { name: "HAMISH KERR", country: "NEW ZEALAND", flag: "🇳🇿", pb: "2.36", sb: "2.35", rank: 5 }
+        this.notices = JSON.parse(localStorage.getItem('skoop_notices')) || [
+            {
+                id: Date.now(),
+                title: "WELCOME TO SKOOP CMS",
+                content: "This is a demonstration of a full CRUD application for digital signage. You can create, read, update, and delete announcements here.",
+                category: "GENERAL",
+                priority: "NORMAL",
+                date: new Date().toLocaleString()
+            }
         ];
 
-        this.state = {
-            currentAthleteIndex: 0,
-            attempt: 1,
-            height: 2.37,
-            isJumping: false,
-            jumpProgress: 0,
-            log: [
-                { name: "S. WOO", height: "2.34m", status: "CLEAR" },
-                { name: "G. TAMBERI", height: "2.37m", status: "FAILED" },
-                { name: "M. BARSHIM", height: "2.34m", status: "CLEAR" }
-            ],
-            historyData: [2.31, 2.33, 2.34, 2.36, 2.35] // Sample progression for chart
-        };
-
         this.elements = {
-            time: document.getElementById('current-time'),
-            date: document.getElementById('current-date'),
-            athleteName: document.getElementById('athlete-name'),
-            athleteCountry: document.getElementById('athlete-country'),
-            athleteFlag: document.getElementById('athlete-flag'),
-            attemptNum: document.getElementById('attempt-num'),
-            targetHeight: document.getElementById('target-height'),
-            jumpStatus: document.getElementById('jump-status'),
-            pb: document.getElementById('pb-val'),
-            sb: document.getElementById('sb-val'),
-            rank: document.getElementById('rank-val'),
-            progressBar: document.getElementById('jump-progress'),
-            logList: document.getElementById('jump-log'),
-            chartCanvas: document.getElementById('heightChart')
+            form: document.getElementById('notice-form'),
+            formTitle: document.getElementById('form-title'),
+            noticeId: document.getElementById('notice-id'),
+            titleInput: document.getElementById('notice-title'),
+            categoryInput: document.getElementById('notice-category'),
+            priorityInput: document.getElementById('notice-priority'),
+            contentInput: document.getElementById('notice-content'),
+            submitBtn: document.getElementById('submit-btn'),
+            cancelBtn: document.getElementById('cancel-btn'),
+            noticeList: document.getElementById('notice-list'),
+            noticeCount: document.getElementById('notice-count'),
+            timeDisplay: document.getElementById('current-time')
         };
 
-        this.chart = null;
         this.init();
     }
 
     init() {
-        this.updateClock();
+        // Event Listeners
+        this.elements.form.addEventListener('submit', (e) => this.handleSubmit(e));
+        this.elements.cancelBtn.addEventListener('click', () => this.resetForm());
+
+        // Clock Update
         setInterval(() => this.updateClock(), 1000);
+        this.updateClock();
 
-        this.initChart();
-        this.updateUI();
-        this.renderLog();
-
-        // Start jump cycle
-        this.cycle();
+        // Initial Render
+        this.renderNotices();
     }
 
     updateClock() {
         const now = new Date();
-        this.elements.time.textContent = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-        this.elements.date.textContent = now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }).toUpperCase();
-    }
-
-    updateUI() {
-        const athlete = this.athletes[this.state.currentAthleteIndex];
-        this.elements.athleteName.textContent = athlete.name;
-        this.elements.athleteCountry.textContent = athlete.country;
-        this.elements.athleteFlag.textContent = athlete.flag;
-        this.elements.attemptNum.textContent = `${this.state.attempt} / 3`;
-        this.elements.targetHeight.textContent = this.state.height.toFixed(2);
-        this.elements.pb.textContent = athlete.pb + 'm';
-        this.elements.sb.textContent = athlete.sb + 'm';
-        this.elements.rank.textContent = '#' + athlete.rank;
-    }
-
-    renderLog() {
-        this.elements.logList.innerHTML = '';
-        this.state.log.slice(0, 4).forEach(item => {
-            const li = document.createElement('li');
-            li.className = 'log-item';
-            li.innerHTML = `
-                <span class="log-name">${item.name}</span>
-                <span class="log-height">${item.height}</span>
-                <span class="log-status ${item.status.toLowerCase()}">${item.status}</span>
-            `;
-            this.elements.logList.appendChild(li);
+        this.elements.timeDisplay.textContent = now.toLocaleTimeString('en-GB', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
         });
     }
 
-    initChart() {
-        const ctx = this.elements.chartCanvas.getContext('2d');
-        this.chart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Event 1', 'Event 2', 'Event 3', 'Event 4', 'Event 5'],
-                datasets: [{
-                    label: 'Height',
-                    data: this.state.historyData,
-                    borderColor: '#00b7af',
-                    backgroundColor: 'rgba(0, 183, 175, 0.1)',
-                    borderWidth: 4,
-                    pointBackgroundColor: '#00b7af',
-                    pointRadius: 6,
-                    tension: 0.4,
-                    fill: true
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false }
-                },
-                scales: {
-                    y: {
-                        min: 2.20,
-                        max: 2.50,
-                        grid: { color: 'rgba(255, 255, 255, 0.05)' },
-                        ticks: { color: 'rgba(255, 255, 255, 0.3)', font: { family: 'Outfit' } }
-                    },
-                    x: {
-                        grid: { display: false },
-                        ticks: { color: 'rgba(255, 255, 255, 0.3)', font: { family: 'Outfit' } }
-                    }
-                }
-            }
-        });
+    saveToStorage() {
+        localStorage.setItem('skoop_notices', JSON.stringify(this.notices));
+        this.renderNotices();
     }
 
-    async cycle() {
-        while (true) {
-            // Wait phase
-            this.elements.jumpStatus.textContent = "WAITING";
-            this.elements.jumpStatus.style.color = "white";
-            this.elements.progressBar.style.width = "0%";
-            await new Promise(r => setTimeout(r, 4000));
+    handleSubmit(e) {
+        e.preventDefault();
 
-            // Preparation phase
-            this.elements.jumpStatus.textContent = "PREPARING";
-            this.elements.jumpStatus.style.color = "#FFD700";
-            await new Promise(r => setTimeout(r, 3000));
+        const id = this.elements.noticeId.value;
+        const noticeData = {
+            title: this.elements.titleInput.value.toUpperCase(),
+            category: this.elements.categoryInput.value,
+            priority: this.elements.priorityInput.value,
+            content: this.elements.contentInput.value,
+            date: new Date().toLocaleString()
+        };
 
-            // Run-up / Jump phase
-            this.elements.jumpStatus.textContent = "JUMPING";
-            this.elements.jumpStatus.style.color = "#00b7af";
-
-            // Animate progress bar (run-up)
-            const duration = 5000;
-            const start = Date.now();
-            while (Date.now() - start < duration) {
-                const elapsed = Date.now() - start;
-                const progress = (elapsed / duration) * 100;
-                this.elements.progressBar.style.width = progress + "%";
-                await new Promise(r => requestAnimationFrame(r));
+        if (id) {
+            // Update Existing
+            const index = this.notices.findIndex(n => n.id == id);
+            if (index !== -1) {
+                this.notices[index] = { ...this.notices[index], ...noticeData };
             }
-
-            // Outcome phase
-            const success = Math.random() > 0.4;
-            const athlete = this.athletes[this.state.currentAthleteIndex];
-
-            if (success) {
-                this.elements.jumpStatus.textContent = "CLEAR";
-                this.elements.jumpStatus.style.color = "#2ed573";
-                this.state.log.unshift({ name: athlete.name.split(' ').map(n => n[0]).join('. '), height: this.state.height.toFixed(2) + "m", status: "CLEAR" });
-                this.state.historyData.push(this.state.height);
-                this.state.historyData.shift();
-                this.chart.update();
-            } else {
-                this.elements.jumpStatus.textContent = "FAILED";
-                this.elements.jumpStatus.style.color = "#ff4757";
-                this.state.log.unshift({ name: athlete.name.split(' ').map(n => n[0]).join('. '), height: this.state.height.toFixed(2) + "m", status: "FAILED" });
-            }
-
-            this.renderLog();
-            await new Promise(r => setTimeout(r, 5000));
-
-            // Advance state
-            if (success || this.state.attempt === 3) {
-                this.state.currentAthleteIndex = (this.state.currentAthleteIndex + 1) % this.athletes.length;
-                this.state.attempt = 1;
-                // Slowly increase height
-                if (success) this.state.height += 0.02;
-            } else {
-                this.state.attempt++;
-            }
-
-            this.updateUI();
+        } else {
+            // Create New
+            noticeData.id = Date.now();
+            this.notices.unshift(noticeData);
         }
+
+        this.saveToStorage();
+        this.resetForm();
+    }
+
+    deleteNotice(id) {
+        if (confirm('Are you sure you want to delete this notice?')) {
+            this.notices = this.notices.filter(n => n.id != id);
+            this.saveToStorage();
+        }
+    }
+
+    editNotice(id) {
+        const notice = this.notices.find(n => n.id == id);
+        if (notice) {
+            this.elements.formTitle.textContent = "EDIT ANNOUNCEMENT";
+            this.elements.noticeId.value = notice.id;
+            this.elements.titleInput.value = notice.title;
+            this.elements.categoryInput.value = notice.category;
+            this.elements.priorityInput.value = notice.priority;
+            this.elements.contentInput.value = notice.content;
+
+            this.elements.submitBtn.innerHTML = '<i class="fas fa-save"></i> UPDATE NOTICE';
+            this.elements.cancelBtn.classList.remove('hidden');
+
+            // Scroll form into view if needed
+            this.elements.form.scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+
+    resetForm() {
+        this.elements.form.reset();
+        this.elements.noticeId.value = "";
+        this.elements.formTitle.textContent = "CREATE NEW ANNOUNCEMENT";
+        this.elements.submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> PUBLISH NOTICE';
+        this.elements.cancelBtn.classList.add('hidden');
+    }
+
+    getCategoryClass(category) {
+        switch(category) {
+            case 'URGENT': return 'tag-urgent';
+            case 'MAINTENANCE': return 'tag-maint';
+            case 'EVENT': return 'tag-event';
+            default: return 'tag-general';
+        }
+    }
+
+    renderNotices() {
+        this.elements.noticeList.innerHTML = '';
+        this.elements.noticeCount.textContent = this.notices.length;
+
+        if (this.notices.length === 0) {
+            this.elements.noticeList.innerHTML = `
+                <div class="notice-item" style="text-align: center; opacity: 0.5; padding: 3rem;">
+                    <i class="fas fa-folder-open" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                    <p>NO ACTIVE NOTICES FOUND</p>
+                </div>
+            `;
+            return;
+        }
+
+        this.notices.forEach(notice => {
+            const item = document.createElement('div');
+            item.className = 'notice-item';
+
+            item.innerHTML = `
+                <div class="notice-header">
+                    <div class="notice-title">${notice.title}</div>
+                    <div class="notice-tags">
+                        <span class="tag ${this.getCategoryClass(notice.category)}">${notice.category}</span>
+                        <span class="tag priority-${notice.priority.toLowerCase()}">${notice.priority}</span>
+                    </div>
+                </div>
+                <div class="notice-body">${notice.content}</div>
+                <div class="notice-footer">
+                    <div class="notice-date"><i class="far fa-clock"></i> ${notice.date}</div>
+                    <div class="notice-actions">
+                        <button class="action-btn edit-btn" onclick="app.editNotice(${notice.id})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="action-btn delete-btn" onclick="app.deleteNotice(${notice.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            this.elements.noticeList.appendChild(item);
+        });
     }
 }
 
-// Start Engine
+// Initialize App
+let app;
 window.addEventListener('load', () => {
-    new JumpingEngine();
+    app = new NoticeManager();
 });
