@@ -7,8 +7,8 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>Skoop Football Live - Match Statistics</title>
-    <link rel="stylesheet" href="styles.css?v=f1o2o3">
+    <title>Skoop Table Tennis Live - World Tour</title>
+    <link rel="stylesheet" href="styles.css?v=t1t2p3">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
@@ -20,109 +20,109 @@
         <header class="header">
             <div class="match-meta">
                 <div class="league-info">
-                    <img src="https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg" alt="League" class="league-logo" onerror="this.style.display='none'">
-                    <span>PREMIER LEAGUE • MATCHWEEK 32</span>
+                    <span class="tournament-tag">WTT CHAMPIONS</span>
+                    <span>MEN'S SINGLES • SEMI-FINAL</span>
                 </div>
                 <div class="clock-box">
-                    <span id="match-time">62:14</span>
+                    <span id="match-duration">00:34:12</span>
                     <span class="live-tag">LIVE</span>
                 </div>
             </div>
             <div class="scoreboard">
-                <div class="team home">
-                    <div class="team-name">REAL MADRID</div>
-                    <div class="team-score" id="home-score">2</div>
+                <div class="player p1">
+                    <div class="player-info">
+                        <div class="player-rank">#1</div>
+                        <div class="player-name">FAN ZHENDONG</div>
+                        <div class="player-nation">CHN</div>
+                    </div>
+                    <div class="player-sets" id="p1-sets">2</div>
+                    <div class="player-points" id="p1-points">08</div>
+                    <div class="serve-indicator" id="p1-serve">●</div>
                 </div>
-                <div class="vs">VS</div>
-                <div class="team away">
-                    <div class="team-score" id="away-score">1</div>
-                    <div class="team-name">MAN CITY</div>
+
+                <div class="vs-container">
+                    <div class="set-history" id="set-history">
+                        <span>11-9</span>
+                        <span>8-11</span>
+                        <span>11-6</span>
+                    </div>
+                </div>
+
+                <div class="player p2">
+                    <div class="serve-indicator" id="p2-serve"></div>
+                    <div class="player-points" id="p2-points">06</div>
+                    <div class="player-sets" id="p2-sets">1</div>
+                    <div class="player-info">
+                        <div class="player-rank">#3</div>
+                        <div class="player-name">MA LONG</div>
+                        <div class="player-nation">CHN</div>
+                    </div>
                 </div>
             </div>
         </header>
 
         <section class="main-content">
             <div class="stats-panel glass">
-                <h2 class="panel-title">MATCH STATISTICS</h2>
+                <h2 class="panel-title">MATCH PERFORMANCE</h2>
                 <div class="stats-grid">
-                    <div class="stat-item">
-                        <div class="stat-values">
-                            <span id="home-possession">54%</span>
-                            <span>POSSESSION</span>
-                            <span id="away-possession">46%</span>
-                        </div>
-                        <div class="stat-bar-container">
-                            <div class="stat-bar home" id="bar-possession-home" style="width: 54%;"></div>
-                            <div class="stat-bar away" id="bar-possession-away" style="width: 46%;"></div>
-                        </div>
-                    </div>
-
                     <div class="stat-row">
-                        <span class="val home" id="home-shots">14</span>
-                        <span class="label">TOTAL SHOTS</span>
-                        <span class="val away" id="away-shots">9</span>
+                        <span class="val p1" id="p1-aces">4</span>
+                        <span class="label">ACES</span>
+                        <span class="val p2" id="p2-aces">3</span>
                     </div>
                     <div class="stat-row">
-                        <span class="val home" id="home-on-target">6</span>
-                        <span class="label">SHOTS ON TARGET</span>
-                        <span class="val away" id="away-shots-on-target">4</span>
+                        <span class="val p1" id="p1-fh-winners">12</span>
+                        <span class="label">FOREHAND WINNERS</span>
+                        <span class="val p2" id="p2-fh-winners">10</span>
                     </div>
                     <div class="stat-row">
-                        <span class="val home" id="home-passes">482</span>
-                        <span class="label">TOTAL PASSES</span>
-                        <span class="val away" id="away-passes">415</span>
+                        <span class="val p1" id="p1-bh-winners">8</span>
+                        <span class="label">BACKHAND WINNERS</span>
+                        <span class="val p2" id="p2-bh-winners">9</span>
                     </div>
                     <div class="stat-row">
-                        <span class="val home" id="home-corners">5</span>
-                        <span class="label">CORNERS</span>
-                        <span class="val away" id="away-corners">3</span>
+                        <span class="val p1" id="p1-unforced">5</span>
+                        <span class="label">UNFORCED ERRORS</span>
+                        <span class="val p2" id="p2-unforced">7</span>
                     </div>
                     <div class="stat-row">
-                        <span class="val home" id="home-fouls">8</span>
-                        <span class="label">FOULS</span>
-                        <span class="val away" id="away-fouls">11</span>
+                        <span class="val p1" id="p1-max-rally">18</span>
+                        <span class="label">MAX RALLY</span>
+                        <span class="val p2" id="p2-max-rally">18</span>
                     </div>
                 </div>
 
-                <div class="cards-display">
-                    <div class="team-cards">
-                        <span class="card yellow">1</span>
-                        <span class="card red">0</span>
-                    </div>
-                    <div class="label">CARDS</div>
-                    <div class="team-cards">
-                        <span class="card yellow">2</span>
-                        <span class="card red">0</span>
+                <div class="win-prob-container">
+                    <div class="label">WIN PROBABILITY</div>
+                    <div class="prob-bar">
+                        <div class="prob-fill p1" id="p1-prob" style="width: 62%;">62%</div>
+                        <div class="prob-fill p2" id="p2-prob" style="width: 38%;">38%</div>
                     </div>
                 </div>
             </div>
 
             <div class="right-panel">
                 <div class="chart-panel glass">
-                    <h2 class="panel-title">ATTACK MOMENTUM</h2>
+                    <h2 class="panel-title">POINT PROGRESSION</h2>
                     <div class="chart-container">
-                        <canvas id="momentumChart"></canvas>
+                        <canvas id="progressionChart"></canvas>
                     </div>
                 </div>
 
                 <div class="events-panel glass">
-                    <h2 class="panel-title">RECENT EVENTS</h2>
-                    <div id="event-feed" class="event-feed">
-                        <div class="event-item">
-                            <span class="event-time">58'</span>
-                            <span class="event-desc">🟨 Yellow Card - Rodri (Man City)</span>
+                    <h2 class="panel-title">LAST RALLY ANALYSIS</h2>
+                    <div id="rally-feed" class="event-feed">
+                        <div class="rally-item winner">
+                            <span class="rally-point">+1</span>
+                            <span class="rally-desc">Forehand Smash Winner - Fan Zhendong</span>
                         </div>
-                        <div class="event-item goal">
-                            <span class="event-time">42'</span>
-                            <span class="event-desc">⚽ GOAL! Vini Jr. (Real Madrid)</span>
+                        <div class="rally-item">
+                            <span class="rally-point">12</span>
+                            <span class="rally-desc">Rally Length (Shots)</span>
                         </div>
-                        <div class="event-item">
-                            <span class="event-time">28'</span>
-                            <span class="event-desc">⚽ GOAL! Erling Haaland (Man City)</span>
-                        </div>
-                        <div class="event-item goal">
-                            <span class="event-time">12'</span>
-                            <span class="event-desc">⚽ GOAL! Jude Bellingham (Real Madrid)</span>
+                        <div class="rally-item">
+                            <span class="rally-point">94km/h</span>
+                            <span class="rally-desc">Top Speed (Ball)</span>
                         </div>
                     </div>
                 </div>
@@ -136,12 +136,12 @@
                 <span id="current-time">14:45:02</span>
             </div>
             <div class="system-status">
-                <span class="status-dot"></span> UPDATING LIVE STATS
+                <span class="status-dot"></span> LIVE SENSOR DATA • 120FPS TRACKING
             </div>
         </footer>
     </main>
 
-    <script src="script.js?v=f1o2o3"></script>
+    <script src="script.js?v=t1t2p3"></script>
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function () {

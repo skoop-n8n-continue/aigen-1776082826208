@@ -1,53 +1,62 @@
-// Football Match Simulation Engine for Digital Signage
-class FootballEngine {
+// Table Tennis Match Simulation Engine for Digital Signage
+class TableTennisEngine {
     constructor() {
         this.match = {
-            time: { minutes: 62, seconds: 14 },
-            score: { home: 2, away: 1 },
-            stats: {
-                possession: { home: 54, away: 46 },
-                shots: { home: 14, away: 9 },
-                onTarget: { home: 6, away: 4 },
-                passes: { home: 482, away: 415 },
-                corners: { home: 5, away: 3 },
-                fouls: { home: 8, away: 11 },
-                yellowCards: { home: 1, away: 2 },
-                redCards: { home: 0, away: 0 }
-            },
-            events: [
-                { time: "58'", desc: "🟨 Yellow Card - Rodri (Man City)", type: 'normal' },
-                { time: "42'", desc: "⚽ GOAL! Vini Jr. (Real Madrid)", type: 'goal' },
-                { time: "28'", desc: "⚽ GOAL! Erling Haaland (Man City)", type: 'goal' },
-                { time: "12'", desc: "⚽ GOAL! Jude Bellingham (Real Madrid)", type: 'goal' }
+            players: [
+                {
+                    name: "FAN ZHENDONG",
+                    rank: "#1",
+                    nation: "CHN",
+                    sets: 2,
+                    points: 8,
+                    stats: { aces: 4, fhWinners: 12, bhWinners: 8, unforced: 5, maxRally: 18 }
+                },
+                {
+                    name: "MA LONG",
+                    rank: "#3",
+                    nation: "CHN",
+                    sets: 1,
+                    points: 6,
+                    stats: { aces: 3, fhWinners: 10, bhWinners: 9, unforced: 7, maxRally: 18 }
+                }
             ],
-            momentumData: Array.from({ length: 63 }, () => Math.floor(Math.random() * 60) - 30)
+            history: ["11-9", "8-11", "11-6"],
+            server: 0, // 0 for player 1, 1 for player 2
+            serveCount: 0,
+            duration: { hours: 0, minutes: 34, seconds: 12 },
+            progressionData: [0, 1, 1, 2, 3, 3, 4, 5, 5, 6, 7, 8], // Sample progression for current set
+            winProb: 62
         };
 
         this.elements = {
-            matchTime: document.getElementById('match-time'),
-            homeScore: document.getElementById('home-score'),
-            awayScore: document.getElementById('away-score'),
-            homePossession: document.getElementById('home-possession'),
-            awayPossession: document.getElementById('away-possession'),
-            barPossessionHome: document.getElementById('bar-possession-home'),
-            barPossessionAway: document.getElementById('bar-possession-away'),
-            homeShots: document.getElementById('home-shots'),
-            awayShots: document.getElementById('away-shots'),
-            homeOnTarget: document.getElementById('home-on-target'),
-            awayOnTarget: document.getElementById('away-shots-on-target'),
-            homePasses: document.getElementById('home-passes'),
-            awayPasses: document.getElementById('away-passes'),
-            homeCorners: document.getElementById('home-corners'),
-            awayCorners: document.getElementById('away-corners'),
-            homeFouls: document.getElementById('home-fouls'),
-            awayFouls: document.getElementById('away-fouls'),
-            eventFeed: document.getElementById('event-feed'),
+            p1Points: document.getElementById('p1-points'),
+            p2Points: document.getElementById('p2-points'),
+            p1Sets: document.getElementById('p1-sets'),
+            p2Sets: document.getElementById('p2-sets'),
+            p1Serve: document.getElementById('p1-serve'),
+            p2Serve: document.getElementById('p2-serve'),
+            p1Prob: document.getElementById('p1-prob'),
+            p2Prob: document.getElementById('p2-prob'),
+            history: document.getElementById('set-history'),
+            duration: document.getElementById('match-duration'),
             clock: document.getElementById('current-time'),
             date: document.getElementById('current-date'),
-            momentumCanvas: document.getElementById('momentumChart')
+            progressionCanvas: document.getElementById('progressionChart'),
+            rallyFeed: document.getElementById('rally-feed'),
+            // Stats
+            p1Aces: document.getElementById('p1-aces'),
+            p2Aces: document.getElementById('p2-aces'),
+            p1Fh: document.getElementById('p1-fh-winners'),
+            p2Fh: document.getElementById('p2-fh-winners'),
+            p1Bh: document.getElementById('p1-bh-winners'),
+            p2Bh: document.getElementById('p2-bh-winners'),
+            p1Err: document.getElementById('p1-unforced'),
+            p2Err: document.getElementById('p2-unforced'),
+            p1Rally: document.getElementById('p1-max-rally'),
+            p2Rally: document.getElementById('p2-max-rally')
         };
 
-        this.momentumChart = null;
+        this.progressionChart = null;
         this.init();
     }
 
@@ -58,11 +67,11 @@ class FootballEngine {
         this.initChart();
         this.updateUI();
 
-        // Increment match time
-        setInterval(() => this.tickMatchTime(), 1000);
+        // Increment match duration
+        setInterval(() => this.tickDuration(), 1000);
 
-        // Randomly simulate stats updates
-        setInterval(() => this.simulateAction(), 8000);
+        // Simulate a point every 8-12 seconds
+        this.scheduleNextPoint();
     }
 
     updateClock() {
@@ -71,119 +80,165 @@ class FootballEngine {
         this.elements.date.textContent = now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }).toUpperCase();
     }
 
-    tickMatchTime() {
-        this.match.time.seconds++;
-        if (this.match.time.seconds >= 60) {
-            this.match.time.minutes++;
-            this.match.time.seconds = 0;
-
-            // Add momentum point every minute
-            const newMomentum = Math.floor(Math.random() * 60) - 30;
-            this.match.momentumData.push(newMomentum);
-            if (this.match.momentumData.length > 90) this.match.momentumData.shift();
-            this.updateChart();
+    tickDuration() {
+        this.match.duration.seconds++;
+        if (this.match.duration.seconds >= 60) {
+            this.match.duration.minutes++;
+            this.match.duration.seconds = 0;
         }
-        this.elements.matchTime.textContent = `${this.match.time.minutes}:${String(this.match.time.seconds).padStart(2, '0')}`;
-
-        // Stop simulation at 90+ mins (simplified)
-        if (this.match.time.minutes >= 95) {
-            this.match.time.minutes = 90;
-            this.match.time.seconds = 0;
+        if (this.match.duration.minutes >= 60) {
+            this.match.duration.hours++;
+            this.match.duration.minutes = 0;
         }
+
+        const h = String(this.match.duration.hours).padStart(2, '0');
+        const m = String(this.match.duration.minutes).padStart(2, '0');
+        const s = String(this.match.duration.seconds).padStart(2, '0');
+        this.elements.duration.textContent = `${h}:${m}:${s}`;
     }
 
-    simulateAction() {
-        // Randomly update stats
-        const side = Math.random() > 0.5 ? 'home' : 'away';
-        const action = Math.random();
+    scheduleNextPoint() {
+        const delay = Math.floor(Math.random() * 4000) + 8000; // 8-12 seconds
+        setTimeout(() => {
+            this.simulatePoint();
+            this.scheduleNextPoint();
+        }, delay);
+    }
 
-        if (action < 0.3) {
-            this.match.stats.passes[side] += Math.floor(Math.random() * 5) + 1;
-        } else if (action < 0.45) {
-            this.match.stats.shots[side]++;
-            if (Math.random() > 0.6) this.match.stats.onTarget[side]++;
-        } else if (action < 0.55) {
-            this.match.stats.fouls[side]++;
-        } else if (action < 0.6) {
-            this.match.stats.corners[side]++;
-        } else if (action < 0.01) { // Very rare goal simulation
-            this.addGoal(side);
+    simulatePoint() {
+        const winnerIdx = Math.random() < (this.match.winProb / 100) ? 0 : 1;
+        const loserIdx = 1 - winnerIdx;
+
+        // Update points
+        this.match.players[winnerIdx].points++;
+
+        // Update serve
+        this.match.serveCount++;
+        if (this.match.serveCount >= 2) {
+            this.match.server = 1 - this.match.server;
+            this.match.serveCount = 0;
         }
 
-        // Adjust possession slightly
-        const shift = Math.floor(Math.random() * 3) - 1;
-        this.match.stats.possession.home = Math.max(30, Math.min(70, this.match.stats.possession.home + shift));
-        this.match.stats.possession.away = 100 - this.match.stats.possession.home;
+        // Handle Deuce (10-10)
+        if (this.match.players[0].points >= 10 && this.match.players[1].points >= 10) {
+            // Serve changes every point in deuce
+            this.match.server = 1 - this.match.server;
+            this.match.serveCount = 0;
+        }
 
+        // Add to progression data (just the winner's point for the chart simplicity)
+        this.match.progressionData.push(this.match.players[0].points);
+        if (this.match.progressionData.length > 20) this.match.progressionData.shift();
+
+        // Check for set win (11 points, win by 2)
+        const p1p = this.match.players[0].points;
+        const p2p = this.match.players[1].points;
+
+        if ((p1p >= 11 || p2p >= 11) && Math.abs(p1p - p2p) >= 2) {
+            this.match.history.push(`${p1p}-${p2p}`);
+            this.match.players[winnerIdx].sets++;
+            this.match.players[0].points = 0;
+            this.match.players[1].points = 0;
+            this.match.progressionData = [0];
+
+            if (this.match.history.length > 5) this.match.history.shift();
+            this.renderHistory();
+        }
+
+        // Update stats randomly
+        const rand = Math.random();
+        if (rand < 0.1) this.match.players[winnerIdx].stats.aces++;
+        else if (rand < 0.4) this.match.players[winnerIdx].stats.fhWinners++;
+        else if (rand < 0.7) this.match.players[winnerIdx].stats.bhWinners++;
+        else if (rand < 0.85) this.match.players[loserIdx].stats.unforced++;
+
+        const rallyLength = Math.floor(Math.random() * 12) + 2;
+        if (rallyLength > this.match.players[0].stats.maxRally) {
+            this.match.players[0].stats.maxRally = rallyLength;
+            this.match.players[1].stats.maxRally = rallyLength;
+        }
+
+        // Dynamic win probability shift
+        this.match.winProb = Math.max(20, Math.min(80, this.match.winProb + (winnerIdx === 0 ? 1 : -1)));
+
+        this.addRallyEvent(winnerIdx, rallyLength);
         this.updateUI();
+        this.updateChart();
     }
 
-    addGoal(side) {
-        this.match.score[side]++;
-        const teamName = side === 'home' ? 'Real Madrid' : 'Man City';
-        const player = side === 'home' ? 'Rodrygo' : 'Kevin De Bruyne';
-        this.addEvent(`⚽ GOAL! ${player} (${teamName})`, 'goal');
+    addRallyEvent(winnerIdx, length) {
+        const types = ["Forehand Smash Winner", "Backhand Loop Winner", "Cross-court Winner", "Net-cord Winner", "Unforced Error"];
+        const type = types[Math.floor(Math.random() * types.length)];
+        const winnerName = this.match.players[winnerIdx].name;
+
+        this.elements.rallyFeed.innerHTML = `
+            <div class="rally-item winner">
+                <span class="rally-point">+1</span>
+                <span class="rally-desc">${type} - ${winnerName}</span>
+            </div>
+            <div class="rally-item">
+                <span class="rally-point">${length}</span>
+                <span class="rally-desc">Rally Length (Shots)</span>
+            </div>
+            <div class="rally-item">
+                <span class="rally-point">${Math.floor(Math.random() * 30) + 70}km/h</span>
+                <span class="rally-desc">Top Speed (Ball)</span>
+            </div>
+        `;
     }
 
-    addEvent(desc, type) {
-        const timeStr = `${this.match.time.minutes}'`;
-        this.match.events.unshift({ time: timeStr, desc: desc, type: type });
-        if (this.match.events.length > 6) this.match.events.pop();
-        this.renderEvents();
-    }
-
-    renderEvents() {
-        this.elements.eventFeed.innerHTML = '';
-        this.match.events.forEach(event => {
-            const div = document.createElement('div');
-            div.className = `event-item ${event.type === 'goal' ? 'goal' : ''}`;
-            div.innerHTML = `
-                <span class="event-time">${event.time}</span>
-                <span class="event-desc">${event.desc}</span>
-            `;
-            this.elements.eventFeed.appendChild(div);
+    renderHistory() {
+        this.elements.history.innerHTML = '';
+        this.match.history.forEach(set => {
+            const span = document.createElement('span');
+            span.textContent = set;
+            this.elements.history.appendChild(span);
         });
     }
 
     updateUI() {
-        this.elements.homeScore.textContent = this.match.score.home;
-        this.elements.awayScore.textContent = this.match.score.away;
+        this.elements.p1Points.textContent = String(this.match.players[0].points).padStart(2, '0');
+        this.elements.p2Points.textContent = String(this.match.players[1].points).padStart(2, '0');
+        this.elements.p1Sets.textContent = this.match.players[0].sets;
+        this.elements.p2Sets.textContent = this.match.players[1].sets;
 
-        this.elements.homePossession.textContent = `${this.match.stats.possession.home}%`;
-        this.elements.awayPossession.textContent = `${this.match.stats.possession.away}%`;
-        this.elements.barPossessionHome.style.width = `${this.match.stats.possession.home}%`;
-        this.elements.barPossessionAway.style.width = `${this.match.stats.possession.away}%`;
+        this.elements.p1Serve.textContent = this.match.server === 0 ? '●' : '';
+        this.elements.p2Serve.textContent = this.match.server === 1 ? '●' : '';
 
-        this.elements.homeShots.textContent = this.match.stats.shots.home;
-        this.elements.awayShots.textContent = this.match.stats.shots.away;
-        this.elements.homeOnTarget.textContent = this.match.stats.onTarget.home;
-        this.elements.awayOnTarget.textContent = this.match.stats.onTarget.away;
+        this.elements.p1Prob.style.width = `${this.match.winProb}%`;
+        this.elements.p1Prob.textContent = `${this.match.winProb}%`;
+        this.elements.p2Prob.style.width = `${100 - this.match.winProb}%`;
+        this.elements.p2Prob.textContent = `${100 - this.match.winProb}%`;
 
-        this.elements.homePasses.textContent = this.match.stats.passes.home;
-        this.elements.awayPasses.textContent = this.match.stats.passes.away;
-        this.elements.homeCorners.textContent = this.match.stats.corners.home;
-        this.elements.awayCorners.textContent = this.match.stats.corners.away;
-        this.elements.homeFouls.textContent = this.match.stats.fouls.home;
-        this.elements.awayFouls.textContent = this.match.stats.fouls.away;
+        // Stats
+        this.elements.p1Aces.textContent = this.match.players[0].stats.aces;
+        this.elements.p2Aces.textContent = this.match.players[1].stats.aces;
+        this.elements.p1Fh.textContent = this.match.players[0].stats.fhWinners;
+        this.elements.p2Fh.textContent = this.match.players[1].stats.fhWinners;
+        this.elements.p1Bh.textContent = this.match.players[0].stats.bhWinners;
+        this.elements.p2Bh.textContent = this.match.players[1].stats.bhWinners;
+        this.elements.p1Err.textContent = this.match.players[0].stats.unforced;
+        this.elements.p2Err.textContent = this.match.players[1].stats.unforced;
+        this.elements.p1Rally.textContent = this.match.players[0].stats.maxRally;
+        this.elements.p2Rally.textContent = this.match.players[1].stats.maxRally;
     }
 
     initChart() {
-        const ctx = this.elements.momentumCanvas.getContext('2d');
-        const labels = Array.from({ length: 90 }, (_, i) => i + 1);
+        const ctx = this.elements.progressionCanvas.getContext('2d');
 
-        this.momentumChart = new Chart(ctx, {
-            type: 'bar',
+        this.progressionChart = new Chart(ctx, {
+            type: 'line',
             data: {
-                labels: labels,
+                labels: Array.from({ length: 20 }, (_, i) => i + 1),
                 datasets: [{
-                    label: 'Momentum',
-                    data: this.match.momentumData,
-                    backgroundColor: (context) => {
-                        const val = context.raw;
-                        return val >= 0 ? 'rgba(0, 183, 175, 0.7)' : 'rgba(56, 189, 248, 0.7)';
-                    },
-                    borderRadius: 4,
-                    borderSkipped: false
+                    label: 'Fan Zhendong Points',
+                    data: this.match.progressionData,
+                    borderColor: '#00b7af',
+                    backgroundColor: 'rgba(0, 183, 175, 0.1)',
+                    borderWidth: 4,
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 0
                 }]
             },
             options: {
@@ -196,14 +251,13 @@ class FootballEngine {
                 scales: {
                     y: {
                         beginAtZero: true,
-                        min: -50,
-                        max: 50,
-                        grid: { color: 'rgba(255, 255, 255, 0.1)', zeroLineColor: '#fff' },
-                        ticks: { display: false }
+                        max: 15,
+                        grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                        ticks: { color: 'rgba(255, 255, 255, 0.3)', font: { family: 'Outfit' } }
                     },
                     x: {
                         grid: { display: false },
-                        ticks: { color: 'rgba(255, 255, 255, 0.3)', font: { family: 'Outfit', size: 10 } }
+                        ticks: { display: false }
                     }
                 }
             }
@@ -211,14 +265,14 @@ class FootballEngine {
     }
 
     updateChart() {
-        if (this.momentumChart) {
-            this.momentumChart.data.datasets[0].data = [...this.match.momentumData];
-            this.momentumChart.update('none');
+        if (this.progressionChart) {
+            this.progressionChart.data.datasets[0].data = [...this.match.progressionData];
+            this.progressionChart.update('none');
         }
     }
 }
 
 // Start Engine
 window.addEventListener('load', () => {
-    new FootballEngine();
+    new TableTennisEngine();
 });
