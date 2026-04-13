@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Skoop Agent Status</title>
+    <link rel="stylesheet" href="styles.css?v=a1b2c3">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="background-overlay"></div>
+    <div class="dashboard">
+        <header>
+            <div class="logo">
+                <span class="dot"></span>
+                <h1>SKOOP <span class="highlight">AGENT</span></h1>
+            </div>
+            <div class="time-display" id="time-display">00:00:00</div>
+        </header>
+
+        <main>
+            <div class="status-container">
+                <div class="status-label">CURRENT ACTIVITY</div>
+                <div class="status-content">
+                    <div id="status-text" class="status-text">INITIALIZING...</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-container">
+                <div class="card">
+                    <h3>SYSTEM LOAD</h3>
+                    <div class="chart-mock">
+                        <div class="bar" style="height: 40%"></div>
+                        <div class="bar" style="height: 60%"></div>
+                        <div class="bar" style="height: 55%"></div>
+                        <div class="bar" style="height: 75%"></div>
+                        <div class="bar" style="height: 65%"></div>
+                        <div class="bar" style="height: 80%"></div>
+                    </div>
+                    <p>Processing queue optimized</p>
+                </div>
+                <div class="card">
+                    <h3>UPTIME</h3>
+                    <div class="metric">99.98%</div>
+                    <p>All nodes operational</p>
+                </div>
+                <div class="card">
+                    <h3>TASKS</h3>
+                    <div class="metric" id="task-count">14</div>
+                    <p>Current session active</p>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <div class="footer-info">
+                <span>STATUS: <span class="online">ONLINE</span></span>
+                <span class="separator">|</span>
+                <span>VERSION: 2.1.100</span>
+            </div>
+        </footer >
+    </div>
+    <script src="script.js?v=a1b2c3"></script>
+</body>
+</html>
