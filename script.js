@@ -12,8 +12,11 @@ const elements = {
     uvIndex: document.getElementById('uv-index'),
     forecastContainer: document.getElementById('forecast-container'),
     lastUpdated: document.getElementById('last-updated'),
-    weatherAnimation: document.getElementById('weather-animation-container')
+    weatherAnimation: document.getElementById('weather-animation-container'),
+    tempChartCanvas: document.getElementById('tempChart')
 };
+
+let tempChart = null;
 
 // Weather code mapping (WMO Weather interpretation codes)
 const weatherMap = {
@@ -58,13 +61,14 @@ function updateClock() {
 // Fetch Weather Data
 async function fetchWeather() {
     try {
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=${LAHORE_COORDS.lat}&longitude=${LAHORE_COORDS.lon}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,visibility,uv_index&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto`;
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${LAHORE_COORDS.lat}&longitude=${LAHORE_COORDS.lon}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,visibility,uv_index&daily=weather_code,temperature_2m_max,temperature_2m_min&hourly=temperature_2m&timezone=auto`;
 
         const response = await fetch(url, { cache: 'no-store' });
         const data = await response.json();
 
         updateCurrentWeather(data.current);
         updateForecast(data.daily);
+        updateChart(data.hourly);
 
         const now = new Date();
         elements.lastUpdated.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -72,6 +76,83 @@ async function fetchWeather() {
     } catch (error) {
         console.error("Error fetching weather:", error);
         elements.condition.textContent = "OFFLINE";
+    }
+}
+
+function updateChart(hourly) {
+    const next24Hours = hourly.time.slice(0, 24);
+    const temperatures = hourly.temperature_2m.slice(0, 24);
+
+    const labels = next24Hours.map(time => {
+        const date = new Date(time);
+        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+    });
+
+    if (tempChart) {
+        tempChart.data.labels = labels;
+        tempChart.data.datasets[0].data = temperatures;
+        tempChart.update();
+    } else {
+        const ctx = elements.tempChartCanvas.getContext('2d');
+        tempChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Temperature (°C)',
+                    data: temperatures,
+                    backgroundColor: 'rgba(0, 183, 175, 0.6)',
+                    borderColor: '#00b7af',
+                    borderWidth: 1,
+                    borderRadius: 5,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        enabled: true,
+                        backgroundColor: 'rgba(16, 24, 31, 0.9)',
+                        titleColor: '#00b7af',
+                        bodyColor: '#ffffff',
+                        borderColor: '#00b7af',
+                        borderWidth: 1
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: '#ffffff',
+                            font: {
+                                family: 'Outfit'
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: '#ffffff',
+                            font: {
+                                family: 'Outfit',
+                                size: 10
+                            },
+                            maxRotation: 45,
+                            minRotation: 45
+                        }
+                    }
+                }
+            }
+        });
     }
 }
 
